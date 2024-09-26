@@ -25,7 +25,7 @@ class OrdersController < ApplicationController
   # POST /orders or /orders.json
   def create
     @order = Order.new(order_params)
-    @order.add_line_item_from_cart(@cart)
+    @order.add_line_items_from_cart(@cart)
 
     respond_to do |format|
       if @order.save
