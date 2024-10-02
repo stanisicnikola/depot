@@ -5,8 +5,6 @@ Rails.application.routes.draw do
     post 'login' => :create
     delete 'logout' => :destroy
   end
-  get 'sessions/create'
-  get 'sessions/destroy'
   resources :users
   resources :orders
   resources :line_items
