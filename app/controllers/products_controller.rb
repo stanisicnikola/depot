@@ -22,9 +22,15 @@ class ProductsController < ApplicationController
   # POST /products or /products.json
   def create
     @product = Product.new(product_params)
+    platforms = Platform.all
 
     respond_to do |format|
       if @product.save
+        platforms.each do |platform|
+          platform_product = PlatformProduct.create!(product_id: @product.id, platform_id: platform.id)
+          LocateJob.perform_later(platform_product.id)
+        end
+   
         format.html { redirect_to @product, notice: "Product was successfully created." }
         format.json { render :show, status: :created, location: @product }
       else

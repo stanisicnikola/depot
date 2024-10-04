@@ -1,0 +1,32 @@
+<div>
+  <h1 class="text-2xl font-bold mb-4">Products and Platforms</h1>
+
+  <table class="table-auto w-full border-collapse border border-gray-300">
+    <thead class="bg-gray-200">
+      <tr>
+        <th class="border border-gray-300 p-2">Product</th>
+        <% @platforms.each do |platform| %>
+          <th class="border border-gray-300 p-2"><%= platform.name %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @products.each do |product| %>
+        <tr class="hover:bg-gray-100">
+          <td class="border border-gray-300 p-2 w-40 h-40 text-center"><%= product.title %></td>
+          <% @platforms.each do |platform| %>
+            <td class="border border-gray-300 p-2 w-40 h-40 text-center">
+              <% platform_product = PlatformProduct.find_by(product: product, platform: platform) %>
+              <% if platform_product %>
+                <%= link_to "Click here to see all candidates", platform_product_path(platform_product) %>
+              <% else %>
+                No data
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+

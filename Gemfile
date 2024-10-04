@@ -24,11 +24,17 @@ gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
 
+gem "httparty"
+
+gem "nokogiri"
+
+
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
 gem "tailwindcss-rails"
 
 gem 'activemodel-serializers-xml', '~> 1.0', '>= 1.0.2'
 gem 'builder'
+gem 'statesman', '~> 12.0.0'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"

@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'containers', to: 'containers#index' 
+  resources :candidates, only: [:index]
+  resources :platform_products, only: [:show]
+  resources :platforms
   get 'admin' => 'admin#index'
   controller :sessions do
     get 'login' => :new

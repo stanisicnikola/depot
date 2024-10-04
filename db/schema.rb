@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_27_153255) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_02_114427) do
+  create_table "candidates", force: :cascade do |t|
+    t.string "url"
+    t.string "image_url"
+    t.string "title"
+    t.integer "platform_product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["platform_product_id"], name: "index_candidates_on_platform_product_id"
+  end
+
   create_table "carts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -37,6 +47,25 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_27_153255) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "platform_products", force: :cascade do |t|
+    t.string "url"
+    t.string "image_url"
+    t.string "title"
+    t.integer "product_id", null: false
+    t.integer "platform_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["platform_id"], name: "index_platform_products_on_platform_id"
+    t.index ["product_id"], name: "index_platform_products_on_product_id"
+  end
+
+  create_table "platforms", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -53,7 +82,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_27_153255) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "candidates", "platform_products"
   add_foreign_key "line_items", "carts"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "products"
+  add_foreign_key "platform_products", "platforms"
+  add_foreign_key "platform_products", "products"
 end
