@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
   get 'containers', to: 'containers#index' 
-  resources :candidates, only: [:index]
-  resources :platform_products, only: [:show]
+  resources :candidates, only: [:index] do
+    put :approve, on: :member
+  end
+
+  resources :platform_products, only: [:show] do
+    get :approved_products, on: :collection
+  end
   resources :platforms
   get 'admin' => 'admin#index'
   controller :sessions do

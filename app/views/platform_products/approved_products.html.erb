@@ -1,0 +1,35 @@
+<table class="min-w-full bg-white border border-gray-300">
+  <thead>
+    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+      <th class="py-3 px-6 text-left">Title</th>
+      <th class="py-3 px-6 text-left">Platform</th>
+      <th class="py-3 px-6 text-left">Book URL</th>
+      <th class="py-3 px-6 text-left">Book Image</th>
+    </tr>
+  </thead>
+  <tbody class="text-gray-600 text-sm font-light">
+    <% @platform_products.each do |platform_product| %>
+      <tr class="border-b border-gray-200 hover:bg-gray-100">
+
+        <td class="py-3 px-6 text-left whitespace-nowrap">
+          <div class="flex items-center">
+            <span class="font-medium"><%= platform_product.product.title %></span>
+          </div>
+        </td>
+
+        <td class="py-3 px-6 text-left">
+          <span><%= platform_product.platform.name %></span>
+        </td>
+
+        <td class="py-3 px-6 text-left">
+          <a href="<%= platform_product.url %>" class="text-blue-500 hover:underline"><%= platform_product.url %></a>
+        </td>
+
+        <td class="py-3 px-6 text-left">
+          <%= image_tag(platform_product.image_url, class: "max-w max-h object-cover") if platform_product.image_url.present? %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+

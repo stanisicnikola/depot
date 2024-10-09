@@ -1,7 +1,7 @@
 Platform.delete_all
 Platform.create!(
-  name: "Amazon",
-  code: "amazon"
+  name: "WH Smith",
+  code: "wh_smith"
 )
 Platform.create!(
   name: "Barnes & noble",

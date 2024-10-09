@@ -15,10 +15,11 @@
         <tr class="hover:bg-gray-100">
           <td class="border border-gray-300 p-2 w-40 h-40 text-center"><%= product.title %></td>
           <% @platforms.each do |platform| %>
-            <td class="border border-gray-300 p-2 w-40 h-40 text-center">
+            <td class="border border-gray-300 p-2 w-40 h-40 text-center cursor-pointer open-modal" data-platform-product-id="<%= PlatformProduct.find_by(product: product, platform: platform)&.id %>">
               <% platform_product = PlatformProduct.find_by(product: product, platform: platform) %>
               <% if platform_product %>
-                <%= link_to "Click here to see all candidates", platform_product_path(platform_product) %>
+                <img src="<%= platform_product.image_url %>" alt="<%= platform_product.title %>" class="max-w max-h object-cover">
+                <p class="text-sm text-gray-500 mt-2"><%= platform_product.current_state %></p>
               <% else %>
                 No data
               <% end %>
@@ -30,3 +31,103 @@
   </table>
 </div>
 
+<!-- Modal -->
+<div id="platform-product-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full overflow-y-auto">
+    <h2 class="text-xl font-bold text-center">Candidates</h2>
+    <div id="candidates-container" class="mt-4 grid grid-cols-3 gap-4"></div>
+    <button id="close-modal" class="mt-4 px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600">Close</button>
+  </div>
+</div>
+
+
+
+
+<script>
+ document.addEventListener("DOMContentLoaded", function() {
+  const modal = document.getElementById("platform-product-modal");
+  const closeModalButton = document.getElementById("close-modal");
+  const candidatesContainer = document.getElementById("candidates-container");
+
+  // Otvaranje modala prilikom klika na ćeliju
+  document.querySelectorAll('.open-modal').forEach(cell => {
+    cell.addEventListener('click', function() {
+      const platformProductId = this.dataset.platformProductId;
+      const platformProductCell = this; // Referenca na kliknutu ćeliju
+
+      // Fetch kandidata za dati platform_product_id
+      fetch(`/candidates?platform_product_id=${platformProductId}`)
+        .then(response => response.json())
+        .then(candidates => {
+          candidatesContainer.innerHTML = ''; // Čišćenje prethodnih kandidata
+          candidatesContainer.className = "grid grid-cols-5 gap-4"; // Grid sa 5 kolone
+
+          candidates.forEach(candidate => {
+            // Limit naslova na 50 karaktera
+            const title = candidate.title.length > 50 ? candidate.title.substring(0, 50) + '...' : candidate.title;
+
+            const candidateDiv = document.createElement('div');
+            candidateDiv.className = "border p-2 flex flex-col items-center"; // Flex layout
+            candidateDiv.innerHTML = `
+              <img src="${candidate.image_url}" alt="${title}" class="w-36 h-40 object-cover mb-2">
+              <p class="text-center">${title}</p>
+              <button class="approve-btn bg-blue-500 text-white rounded p-2 mt-2" data-candidate-id="${candidate.id}" data-platform-product-id="${platformProductId}">Approve</button>
+            `;
+            candidatesContainer.appendChild(candidateDiv);
+          });
+
+          // Dodavanje event listenera za approve dugme
+          document.querySelectorAll('.approve-btn').forEach(button => {
+            button.addEventListener('click', function() {
+              const candidateId = this.dataset.candidateId;
+              const platformProductId = this.dataset.platformProductId;
+              const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+              fetch(`/candidates/${candidateId}/approve`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-Token': csrfToken
+                },
+                body: JSON.stringify({ id: candidateId })
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  // Zatvori modal nakon approve-a
+                  modal.classList.add("hidden");
+
+                  // Ažuriraj ćeliju sa slikom i naslovom odobrenog kandidata
+                  platformProductCell.innerHTML = `
+                    <img src="${data.platform_product.image_url}" alt="${data.platform_product.title}" class="w-36 h-40 object-cover">
+                    <p class="text-sm text-gray-500 mt-2">${data.state}</p>
+                  `;
+                } else {
+                  console.error("Greška pri odobravanju kandidata:", data.error);
+                }
+              })
+              .catch(error => {
+                console.error("Greška:", error);
+              });
+            });
+          });
+        });
+
+      modal.classList.remove("hidden");
+    });
+  });
+
+  // Zatvori modal
+  closeModalButton.addEventListener('click', function() {
+    modal.classList.add("hidden");
+  });
+
+  // Zatvori modal kada klikneš izvan njega
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal) {
+      modal.classList.add("hidden");
+    }
+  });
+});
+
+</script>

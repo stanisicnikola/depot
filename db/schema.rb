@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_02_114427) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_06_121825) do
   create_table "candidates", force: :cascade do |t|
     t.string "url"
     t.string "image_url"
@@ -45,6 +45,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_02_114427) do
     t.integer "pay_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "platform_product_transitions", force: :cascade do |t|
+    t.string "to_state", null: false
+    t.text "metadata"
+    t.integer "sort_key", null: false
+    t.integer "platform_product_id", null: false
+    t.boolean "most_recent", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["platform_product_id", "most_recent"], name: "index_platform_product_transitions_parent_most_recent", unique: true, where: "most_recent"
+    t.index ["platform_product_id", "sort_key"], name: "index_platform_product_transitions_parent_sort", unique: true
   end
 
   create_table "platform_products", force: :cascade do |t|
@@ -86,6 +98,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_02_114427) do
   add_foreign_key "line_items", "carts"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "products"
+  add_foreign_key "platform_product_transitions", "platform_products"
   add_foreign_key "platform_products", "platforms"
   add_foreign_key "platform_products", "products"
 end
