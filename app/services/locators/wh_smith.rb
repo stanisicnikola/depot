@@ -12,13 +12,9 @@ module Services
         platform_product.transition_to(:locating)
 
         begin
-          platform_code = platform_product.platform.code
-          url = Platform::URLS[platform_code.to_sym]
-
+          url = platform_product.platform.url
           request_url = "#{url}#{CGI.escape(platform_product.product.title)}"
-
-          full_request_url = request_url + "&productType=1"
-
+          full_request_url = request_url + "&productType=0"
           response = HTTParty.get(full_request_url)
           document = Nokogiri::HTML(response.body)
 
@@ -40,14 +36,16 @@ module Services
             full_book_image_url = "https:" + book_image_url
     
 
-            #book_price = book.css('.format + span')
-            #puts "Cijena knjige: #{book_price.text}"
+            price_text = book.css('.search-item__purchase-price').text.strip
+            book_price = price_text.gsub('£', '').to_d
+
     
             Candidate.create!(
               title: full_title,
               url: full_book_url,
               image_url: full_book_image_url,
-              platform_product_id: platform_product_id
+              platform_product_id: platform_product_id,
+              amount: book_price
             )
           end
           platform_product.transition_to(:located)

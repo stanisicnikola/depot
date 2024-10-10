@@ -4,6 +4,7 @@ class PlatformProduct < ApplicationRecord
 
   has_many :candidates, dependent: :destroy
   has_many :transitions, dependent: :destroy, class_name: 'PlatformProductMachine::Transition', autosave: false
+  has_many :platform_product_prices, dependent: :destroy
 
   include Statesman::Adapters::ActiveRecordQueries[
     transition_class: PlatformProductMachine::Transition,

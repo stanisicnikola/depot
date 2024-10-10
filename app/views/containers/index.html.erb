@@ -69,7 +69,7 @@
             const candidateDiv = document.createElement('div');
             candidateDiv.className = "border p-2 flex flex-col items-center"; // Flex layout
             candidateDiv.innerHTML = `
-              <img src="${candidate.image_url}" alt="${title}" class="w-36 h-40 object-cover mb-2">
+              <img src="${candidate.image_url}" alt="${title}" class="max-w max-h object-cover mb-2">
               <p class="text-center">${title}</p>
               <button class="approve-btn bg-blue-500 text-white rounded p-2 mt-2" data-candidate-id="${candidate.id}" data-platform-product-id="${platformProductId}">Approve</button>
             `;
@@ -99,7 +99,7 @@
 
                   // Ažuriraj ćeliju sa slikom i naslovom odobrenog kandidata
                   platformProductCell.innerHTML = `
-                    <img src="${data.platform_product.image_url}" alt="${data.platform_product.title}" class="w-36 h-40 object-cover">
+                    <img src="${data.platform_product.image_url}" alt="${data.platform_product.title}" class="max-w max-h object-cover">
                     <p class="text-sm text-gray-500 mt-2">${data.state}</p>
                   `;
                 } else {

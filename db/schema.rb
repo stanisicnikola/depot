@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_06_121825) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_09_165708) do
   create_table "candidates", force: :cascade do |t|
     t.string "url"
     t.string "image_url"
@@ -18,6 +18,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_06_121825) do
     t.integer "platform_product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "amount"
     t.index ["platform_product_id"], name: "index_candidates_on_platform_product_id"
   end
 
@@ -45,6 +46,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_06_121825) do
     t.integer "pay_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "platform_product_prices", force: :cascade do |t|
+    t.decimal "amount"
+    t.boolean "most_recent", null: false
+    t.integer "platform_product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["platform_product_id"], name: "index_platform_product_prices_on_platform_product_id"
   end
 
   create_table "platform_product_transitions", force: :cascade do |t|
@@ -76,6 +86,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_06_121825) do
     t.string "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "url"
   end
 
   create_table "products", force: :cascade do |t|
@@ -98,6 +109,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_06_121825) do
   add_foreign_key "line_items", "carts"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "products"
+  add_foreign_key "platform_product_prices", "platform_products"
   add_foreign_key "platform_product_transitions", "platform_products"
   add_foreign_key "platform_products", "platforms"
   add_foreign_key "platform_products", "products"

@@ -5,6 +5,8 @@
       <th class="py-3 px-6 text-left">Platform</th>
       <th class="py-3 px-6 text-left">Book URL</th>
       <th class="py-3 px-6 text-left">Book Image</th>
+      <th class="py-3 px-6 text-left">Price</th>
+
     </tr>
   </thead>
   <tbody class="text-gray-600 text-sm font-light">
@@ -13,7 +15,7 @@
 
         <td class="py-3 px-6 text-left whitespace-nowrap">
           <div class="flex items-center">
-            <span class="font-medium"><%= platform_product.product.title %></span>
+            <span class="font-medium"><%= platform_product.title %></span>
           </div>
         </td>
 
@@ -27,6 +29,20 @@
 
         <td class="py-3 px-6 text-left">
           <%= image_tag(platform_product.image_url, class: "max-w max-h object-cover") if platform_product.image_url.present? %>
+        </td>
+        <td class="py-3 px-6 text-left">
+          <span>
+            <% price = platform_product.platform_product_prices.find_by(most_recent: true) %>
+            <% if price.present? %>
+              <% if platform_product.platform.code == 'barnes_and_noble'%>
+                <%= price.amount %> USD
+              <% elsif platform_product.platform.code == 'wh_smith' %>
+                <%= price.amount %> GBP
+              <% end %>
+            <% else%>
+              N/A
+            <% end%>
+          </span>
         </td>
       </tr>
     <% end %>
